@@ -23,7 +23,7 @@ The 2025 Stack Overflow Developer Survey — a comprehensive primary source repr
 | Week | Focus | Status |
 |---|---|---|
 | 1 | Project kickoff, team roles, dataset acquisition, environment & repo setup | ✅ Done |
-| 2 | Data cleaning & preparation (missing values, duplicates, outliers, feature selection) | 🔄 In progress |
+| 2 | Data cleaning & preparation (missing values, duplicates, outliers, feature selection) | ✅ Done |
 | 3 | Exploratory Data Analysis (distributions, outliers, relationships, geographic visualisations) | ⬜ Not started |
 | 4 | Feature engineering & train/test split (75–80% / 25–30%) | ⬜ Not started |
 | 5 | Baseline modelling (e.g. linear regression) | ⬜ Not started |
