@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("/content/drive/MyDrive/Colab Notebooks/results.txt")
+df = pd.read_csv("data/raw/results.txt")
 print(df.shape)
 print(df.columns.tolist())
 print(df.isna().mean().sort_values(ascending=False).head(30))
@@ -117,5 +117,5 @@ print(df.isna().sum().sum())
 print(df.shape)
 print(df["ConvertedCompYearly"].describe())
 
-df.to_csv("/content/drive/MyDrive/Colab Notebooks/clean.csv", index=False)
+df.to_csv("data/processed/clean.csv", index=False)
 print("saved", df.shape)

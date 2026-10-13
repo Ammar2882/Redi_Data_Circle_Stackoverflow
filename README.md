@@ -36,13 +36,23 @@ The 2025 Stack Overflow Developer Survey — a comprehensive primary source repr
 
 ```
 .
-├── data_cleaning.py   # Week 2: cleaning & preparation of the raw survey data
+├── data/
+│   ├── raw/              # original survey export (not committed — see .gitignore)
+│   └── processed/
+│       └── clean.csv     # Week 2 output: cleaned dataset
+├── notebooks/             # exploratory notebooks (EDA, scratch work)
+├── outputs/
+│   └── figures/           # saved plots/charts from EDA & modelling
+├── src/
+│   ├── data_cleaning.py   # Week 2: cleaning & preparation of the raw survey data
+│   └── eda.py              # Week 3: exploratory data analysis & plots
+├── requirements.txt
 └── README.md
 ```
 
-As the project progresses through later weeks, scripts/notebooks for EDA, feature engineering, modelling, and the dashboard will be added here.
+As the project progresses through later weeks, scripts/notebooks for feature engineering, modelling, and the dashboard will be added under `src/`.
 
-## Current Progress — Data Cleaning (`data_cleaning.py`)
+## Current Progress — Data Cleaning (`src/data_cleaning.py`)
 
 Starting from the raw survey responses, the cleaning script:
 
@@ -53,16 +63,16 @@ Starting from the raw survey responses, the cleaning script:
 - Detects and removes salary outliers, both globally (99th percentile) and relative to each country's median (below 10% of country median), plus a $1,000 floor to remove obvious data-entry errors
 - Groups countries with fewer than 50 respondents into an `Other` category
 - Drops rows missing core fields (`WorkExp`, `YearsCode`, `EdLevel`) and fills remaining optional fields with `"Unknown"`
-- Outputs the cleaned dataset to `clean.csv`
+- Outputs the cleaned dataset to `data/processed/clean.csv`
 
 ## Getting Started
 
 ```bash
-pip install pandas
-python data_cleaning.py
+pip install -r requirements.txt
+python src/data_cleaning.py
 ```
 
-> Note: file paths in the script currently point to a Google Drive / Colab path and will need to be updated to a local or repo-relative path when running outside Colab.
+> Run scripts from the repository root so the relative `data/...` paths resolve correctly. Place the raw survey export at `data/raw/results.txt` before running `data_cleaning.py`.
 
 ## Tech Stack
 
