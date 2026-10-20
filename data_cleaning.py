@@ -1,12 +1,11 @@
 import pandas as pd
 
-df = pd.read_csv("/content/drive/MyDrive/Colab Notebooks/results.txt")
+df = pd.read_csv("./data/results.csv")
 print(df.shape)
 print(df.columns.tolist())
 print(df.isna().mean().sort_values(ascending=False).head(30))
 
 cols = [
-    "ConvertedCompYearly",
     "Country",
     "WorkExp",
     "YearsCode",
@@ -19,6 +18,7 @@ cols = [
     "Industry",
     "ICorPM",
     "LanguageHaveWorkedWith",
+    "ConvertedCompYearly",
 ]
 print(df[cols].isna().mean().sort_values(ascending=False))
 print(df[cols].dtypes)
@@ -37,7 +37,7 @@ print(
 )
 print(dup_rows.isna().mean(axis=1).mean().round(2), "average share of empty answers")
 
-# removing the rows where compsalary is empty its critical for final prediction
+# removing the rows where comp salary is empty its critical for final prediction
 before = len(df)
 df = df[df["ConvertedCompYearly"].notna()]
 print("removed:", before - len(df), "| remaining:", len(df))
@@ -65,12 +65,12 @@ print(low_earners["ConvertedCompYearly"].describe())
 # we need to check and drop outliers countrywise because 2000 salary in nepal is not an outlier but in usa it is
 country_median = df.groupby("Country")["ConvertedCompYearly"].transform("median")
 
-# flaging salaries below 10% of the median w.r.t country
+# flagging salaries below 10% of the median w.r.t country
 too_low = df["ConvertedCompYearly"] < 0.10 * country_median
 print(too_low.sum(), "salaries are below 10% of their country's median")
 print(df[too_low]["Country"].value_counts().head(10))
 
-# droping lows and highs
+# dropping lows and highs
 high = df["ConvertedCompYearly"].quantile(0.99)
 df = df[~too_low & (df["ConvertedCompYearly"] <= high)]
 
@@ -79,7 +79,7 @@ print(f"upper cut-off: ${high:,.0f}")
 print("removed:", before - len(df), "| remaining:", len(df))
 print(df["ConvertedCompYearly"].describe())
 
-# checking for the wrong median values becuase of less respondants
+# checking for the wrong median values because of less respondants
 print(df.nsmallest(15, "ConvertedCompYearly")[["Country", "ConvertedCompYearly"]])
 print((df["ConvertedCompYearly"] < 1000).sum(), "people still under $1,000")
 
@@ -103,9 +103,16 @@ print((df["Country"] == "Other").sum(), "people now in 'Other'")
 print(df.isna().sum())
 
 before = len(df)
-# droping WorkExp YearsCode EdLevel where missing
+# dropping WorkExp YearsCode EdLevel where missing
 df = df.dropna(subset=["WorkExp", "YearsCode", "EdLevel"])
 print("removed: ", before - len(df), " | remaining: ", len(df))
+
+df = df.loc[
+    (df['WorkExp'] <= 52) &
+    (df['YearsCode'] <= 60) &
+    ((df['WorkExp'] - df['YearsCode']) <= 10)
+]
+print(df[['ConvertedCompYearly', 'WorkExp', 'YearsCode']].describe())
 
 # filling the rest where missing too many to drop
 fill_cols = ["OrgSize", "RemoteWork", "ICorPM", "Industry", "LanguageHaveWorkedWith"]
@@ -117,5 +124,5 @@ print(df.isna().sum().sum())
 print(df.shape)
 print(df["ConvertedCompYearly"].describe())
 
-df.to_csv("/content/drive/MyDrive/Colab Notebooks/clean.csv", index=False)
+df.to_csv("./data/clean.csv", index=False)
 print("saved", df.shape)
