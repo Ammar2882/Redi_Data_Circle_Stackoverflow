@@ -7,19 +7,21 @@ print(df.isna().mean().sort_values(ascending=False).head(30))
 
 cols = [
     "Country",
+    "Age",
+    "EdLevel",
+    "Employment",
     "WorkExp",
     "YearsCode",
-    "EdLevel",
-    "Age",
     "DevType",
-    "Employment",
     "OrgSize",
     "RemoteWork",
     "Industry",
-    "ICorPM",
     "LanguageHaveWorkedWith",
+    "DatabaseHaveWorkedWith",
+    "PlatformHaveWorkedWith",
     "ConvertedCompYearly",
 ]
+
 print(df[cols].isna().mean().sort_values(ascending=False))
 print(df[cols].dtypes)
 print(df["ConvertedCompYearly"].notna().sum(), "people reported a salary")
