@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv("data/raw/results.txt")
+df = pd.read_csv("./data/raw/results.txt")
 print(df.shape)
 print(df.columns.tolist())
 print(df.isna().mean().sort_values(ascending=False).head(30))
@@ -46,6 +46,15 @@ print(df["MainBranch"].value_counts())
 # keeping only the professional developer for better accuracy
 before = len(df)
 df = df[df["MainBranch"] == "I am a developer by profession"]
+print("remove :", before - len(df), " | remaining:", len(df))
+
+# dropping unemployed/retired responses - a reported salary from someone without
+# a current job isn't representative of what we're trying to predict (current
+# compensation based on current role, remote work, org size, etc.)
+# NOTE: "Student" is kept here - the EDA compares junior salaries for
+# Employed vs Student and filters Student out itself for later analyses
+before = len(df)
+df = df[~df["Employment"].isin(["Not employed", "Retired"])]
 print("remove :", before - len(df), " | remaining:", len(df))
 
 # picking up only the required columns
@@ -106,6 +115,18 @@ before = len(df)
 # droping WorkExp YearsCode EdLevel where missing
 df = df.dropna(subset=["WorkExp", "YearsCode", "EdLevel"])
 print("removed: ", before - len(df), " | remaining: ", len(df))
+
+# capping impossible experience values (some respondents entered more than 50 years)
+df[["WorkExp", "YearsCode"]] = df[["WorkExp", "YearsCode"]].clip(upper=50)
+
+# standardising the different "didn't answer" labels into a single Unknown label
+df = df.replace(
+    {
+        "I don’t know": "Unknown",  # curly ’ as in the survey
+        "Prefer not to say": "Unknown",
+        "I prefer not to say": "Unknown",
+    }
+)
 
 # filling the rest where missing too many to drop
 fill_cols = ["OrgSize", "RemoteWork", "ICorPM", "Industry", "LanguageHaveWorkedWith"]
